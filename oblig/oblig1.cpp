@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 
+using namespace std;
 
 
 
@@ -36,3 +37,13 @@ const int gMinutter[ANTSTOPP][ANTSTOPP] = ///< Min.mellom stoppesteder.
 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Kallerud = 8
 { 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 2}, // Hunndalen = 9
 { 0, 4, 0, 0, 0, 0, 2, 0, 0, 2, 0} }; // Mustad fabrikker = 10
+
+void skrivMeny() {
+    cout << "\n-----MENY-----\n";
+    cout << "N - Ny rute\n";
+    cout << "S - Slett rute\n";
+    cout << "A - Skriv alle ruter";
+    cout << "B - Skriv alle busstopp\n";
+    cout << "Velg kommando:";
+
+}
