@@ -76,18 +76,9 @@ void skrivMeny() {
 }
 
 void SkrivStopp() {
-    cout << "\n---Alle stoppesteder---\n";
-    cout << "Skysstasjonen\n";
-    cout << "Fahlstroms plass\n";
-    cout << "Sykehuset\n";
-    cout << "Gjøvik stadion\n";
-    cout << "Bergslia\n";
-    cout << "Overby\n";
-    cout << "Nybrua\n";
-    cout << "NTNU\n";
-    cout << "Kallerud\n";
-    cout << "Hunndalen\n";
-    cout << "Mustad fabrikker\n";
+    for (int i = 0; i < ANTSTOPP; i++) {
+
+    }
 }
 
 void SkrivRuter() {
