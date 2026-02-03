@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include "LesData2.h"
 
 using namespace std;
 
@@ -38,6 +39,32 @@ const int gMinutter[ANTSTOPP][ANTSTOPP] = ///< Min.mellom stoppesteder.
 { 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 2}, // Hunndalen = 9
 { 0, 4, 0, 0, 0, 0, 2, 0, 0, 2, 0} }; // Mustad fabrikker = 10
 
+void skrivMeny();
+void skrivStopp();
+void skrivRuter();
+void skrivNesteStoppesteder(const int stopp);
+void nyRute();
+bool ruteLesData(Rute & rute);
+void slettRute();
+
+int main() {
+    char kommando;
+
+    do {
+        switch (kommando)
+        {
+        case 'N': nyRute();         break;
+        case 'S': slettRute();      break;
+        case 'A': skrivRuter();     break;
+        case 'B': skrivStopp();     break;
+        default: skrivMeny();       break;
+        } 
+        kommando = lesChar("\nSkriv kommando: ");
+
+    } while (kommando != 'Q');
+
+    return 0;
+}
 void skrivMeny() {
     cout << "\n-----MENY-----\n";
     cout << "N - Ny rute\n";
@@ -45,5 +72,24 @@ void skrivMeny() {
     cout << "A - Skriv alle ruter";
     cout << "B - Skriv alle busstopp\n";
     cout << "Velg kommando:";
+
+}
+
+void SkrivStopp() {
+    cout << "\n---Alle stoppesteder---\n";
+    cout << "Skysstasjonen\n";
+    cout << "Fahlstroms plass\n";
+    cout << "Sykehuset\n";
+    cout << "Gjøvik stadion\n";
+    cout << "Bergslia\n";
+    cout << "Overby\n";
+    cout << "Nybrua\n";
+    cout << "NTNU\n";
+    cout << "Kallerud\n";
+    cout << "Hunndalen\n";
+    cout << "Mustad fabrikker\n";
+}
+
+void SkrivRuter() {
 
 }
