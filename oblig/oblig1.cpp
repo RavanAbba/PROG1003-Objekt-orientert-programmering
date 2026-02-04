@@ -49,6 +49,7 @@ void slettRute();
 
 int main() {
     char kommando;
+    skrivNesteStoppesteder(0);
 
     do {
         switch (kommando)
@@ -83,5 +84,27 @@ void skrivStopp() {
 }
 
 void skrivNesteStoppesteder(const int stopp) {
+    for (int i = 0; i < ANTSTOPP; i++) {
+        if (gMinutter[stopp][i] > 0) {
+            cout << "\nFra stopp nr " << (stopp + 1) << ": " << gBusstopp[stopp] << "\n";
+            cout << "\nTil stopp nr " << (i + 1) << ": " << gBusstopp[i] << " (" << gMinutter[stopp][i] << " min)";
+        }
+    }
+}
+
+void ruteSkrivData() {
     
+}
+
+bool ruteLesData(Rute & rute) {
+
+
+}
+
+void nyRute() {
+
+}
+
+void skrivRuter() {
+
 }
