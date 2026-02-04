@@ -75,12 +75,13 @@ void skrivMeny() {
 
 }
 
-void SkrivStopp() {
+void skrivStopp() {
     for (int i = 0; i < ANTSTOPP; i++) {
-
+        cout << "\nBuss stop nr " << i+1 << ": "<< gBusstopp[i];
+        
     }
 }
 
-void SkrivRuter() {
-
+void skrivNesteStoppesteder(const int stopp) {
+    
 }
