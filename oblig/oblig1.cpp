@@ -49,16 +49,16 @@ const int gMinutter[ANTSTOPP][ANTSTOPP] = ///< Min.mellom stoppesteder.
 { 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 2}, // Hunndalen = 9
 { 0, 4, 0, 0, 0, 0, 2, 0, 0, 2, 0} }; // Mustad fabrikker = 10
 
-void skrivMeny();
-void skrivStopp();
-void skrivRuter();
-void skrivNesteStoppesteder(const int stopp);
 void nyRute();
 bool ruteLesData(Rute & rute);
 void ruteSkrivData(const Rute rute);
-void slettRute();
+void skrivMeny();
+void skrivNesteStoppesteder(const int stopp);
+void skrivRuter();
 void slett(const int nr);
 void slett();
+void slettRute();
+void skrivStopp();
 
 /**
  *  Hovedprogrammet.
