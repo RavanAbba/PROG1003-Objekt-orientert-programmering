@@ -18,7 +18,10 @@
  */
 
 
-#include <stdio.h>           //  printf, scanf
+#include <iostream>   // cout / cin
+#include <iomanip>   // setw
+
+using namespace std;
 
 const int MINTEMP   = -70;   ///<  Absolutt laveste mulige temperatur.
 const int MAXTEMP   =  70;   ///<  Absolutt høyeste mulige temperatur.
@@ -42,33 +45,33 @@ int main ()  {
        alleMax[MAXDAGER],    //  ALLE max.temper i måneden.
        alleNedbor[MAXDAGER]; //  ALL nedbør i måneden.
 
-  printf("\nLese inn vaerdata for en maaned (J/n): ");   //  Kjøre programmet?
-  scanf(" %c", &svar);
+  cout << "\nLese inn vaerdata for en maaned (J/n): ";   //  Kjøre programmet?
+  cin >> svar;
 
   while (svar != 'N'  &&  svar != 'n') { //  Så lenge ønsker (IKKE svart 'N'):
      do {                    //  Leser antall dager i måneden (28-31):
-        printf("Antall dager i maaneden (%i til %i):  ", MINDAGER, MAXDAGER);
-        scanf("%i", &antDager);
+        cout << "Antall dager i maaneden " << MINDAGER << "til" << MAXDAGER;
+        cin >> antDager;
      } while (antDager < MINDAGER  ||  antDager > MAXDAGER);
 
      for (int i = 0;  i < antDager;  i++)  { //  Går gjennom HELE måneden:
-         printf("\nDag nr.%2i:\n", i+1);
+         cout << "\nDag nr." << setw(2) << i+1 << endl;
 
          do {                             //  Leser korrekt min.temp dag nr.i:
-           printf("\tMinimumstemp (%2i til %2i): ", MINTEMP, MAXTEMP);
-           scanf("%i", &min);
+           cout << "\tMinimumstemp (" << setw(2) << MINTEMP << " til " << setw(2) << MAXTEMP << "): ";
+           cin >> min;
          } while(min < MINTEMP ||  min > MAXTEMP);
          alleMin[i] = min;                //  Lagrer unna innlest verdi.
 
          do {                             //  Leser korrekt max.temp dag nr.i:
-            printf("\tMaksimumstemp (%2i til %2i): ", min, MAXTEMP);
-            scanf("%i", &max);
+            cout << "\tMaksimumstemp (" << setw(2) << min << " til " << setw(2) << MAXTEMP << ")";
+            cin >> max;
          } while(max < min  ||  max > MAXTEMP);
          alleMax[i] = max;                //  Lagrer unna innlest verdi.
 
          do {                             //  Leser korrekt nedbør dag nr.i:
-            printf("\tNedbor (0 til %i): ", MAXNEDBOR);
-            scanf("%i", &nedbor);
+            cout << "\tNedbor (0 til " << MAXNEDBOR << "): ";
+            cin >> nedbor;
          } while(nedbor < 0  ||  nedbor > MAXNEDBOR);
          alleNedbor[i] = nedbor;          //  Lagrer unna innlest verdi.
      }
@@ -80,9 +83,12 @@ int main ()  {
          totNedbor += alleNedbor[i];         //  Oppsummerer tot.nedbør.
      }
                                     //  Skriver gjennomsnitter og EN totalsum:
-     printf("\n\nGjennomsnittlig min.temp: %.2f grader C\n",
-                                                      (float)totMin/antDager);
-   printf("Gjennomsnittlig max.temp: %.2f grader C\n",(float)totMax/antDager);
+     cout << "\n\nGjennomsnittlig min.temp: " 
+     << fixed << setprecision(2) 
+     << (float)totMin/antDager << " grader C" << endl;
+
+     cout << "Gjennomsnittlig max.temp: " 
+     << fixed << setprecision(2 << (float)totMax/antDager) << ")>> grader C\n",;
      printf("Gjennomsnittlig nedbor:   %.2f mm\n", (float)totNedbor/antDager);
      printf("Total nedbor i maaneden:   %i mm\n", totNedbor);
                                              //  Kjøre programmet igjen?
