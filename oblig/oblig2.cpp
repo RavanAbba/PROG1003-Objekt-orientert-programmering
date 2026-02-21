@@ -18,7 +18,7 @@
  *      med hver sine ulike aktiviteter.
  *
  *  @file OBLIG2.CPP
- *  @author Malin Foss, William Eide Seiner og Frode Haug, NTNU
+ *  @author Ravan Abbasov
  */
 
 
@@ -142,8 +142,14 @@ int main ()  {
  *  Leser inn ALLE klassens data.
  */
 void Aktivitet::lesData() {
+  int valg;         // trenger for å static_cast e enum.
 
-//  Lag innmaten
+  cout << "aktivitetens navn: ";
+  cin >> navn;
+  cout << "\naktivitetens kategori (0=Jobb, 1=Fritid, 2=Skole): ";
+  cin >> valg;
+  kategori = static_cast<aktivitetsType>(valg);
+  
 }
 
 
@@ -151,8 +157,18 @@ void Aktivitet::lesData() {
  *  Skriver ut ALLE klassens data.
  */
 void Aktivitet::skrivData() const {
+  cout << "Skriver ut datamedlemene: \n";
+  cout << navn << endl;
+  
+  // bruker switch for å skrive ut riktige kategori.
+  switch (kategori) {
+    case Jobb: cout << "Jobb"; break;
+    case Fritid: cout << "Fritid"; break;
+    case Skole: cout << "Skole"; break;
+    case ikkeAngitt: cout << "Ikke angitt"; break;
+  }
+  cout << endl;
 
-//  Lag innmaten
 }
 
 
@@ -163,8 +179,25 @@ void Aktivitet::skrivData() const {
  *  @see   klokkeslettOK(...)
  */
 void Tidsbegrenset::lesData() {
+  Aktivitet::lesData(); 
 
-//  Lag innmaten
+  do  {
+    cout << "timeslett for start (mellom 0 og 23): ";
+    cin >> startTime;
+    cout << "\nMinutt for start (mellom 0 og 59): ";
+    cin >> startMin;
+  } while (!klokkeslettOK(startTime, startMin));
+
+  do {
+    cout << "\nTimeslett for slutt (mellom 0 og 23): ";
+    cin >> sluttTime;
+    cout << "\nMinutt for slutt (mellom 0 og 59): ";
+    cin >> sluttMin;
+  } while (!klokkeslettOK(sluttTime, sluttMin) || (sluttTime < startTime));
+
+  
+
+
 }
 
 
