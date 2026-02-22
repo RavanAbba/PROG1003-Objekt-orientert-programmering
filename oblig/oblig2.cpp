@@ -26,6 +26,7 @@
 #include <string>                  //  string
 #include <vector>                  //  vector
 #include "LesData2.h"
+#include <iomanip>                 // setw, setfill
 using namespace std;
 
 
@@ -193,7 +194,8 @@ void Tidsbegrenset::lesData() {
     cin >> sluttTime;
     cout << "\nMinutt for slutt (mellom 0 og 59): ";
     cin >> sluttMin;
-  } while (!klokkeslettOK(sluttTime, sluttMin) || (sluttTime < startTime));
+  } while (!klokkeslettOK(sluttTime, sluttMin) || (sluttTime < startTime) || 
+          (sluttTime == startTime && sluttMin < startMin));
 
   
 
@@ -209,8 +211,9 @@ void Tidsbegrenset::lesData() {
  *  @return  Om parametrene er et lovlig klokkeslett eller ei
  */
 bool Tidsbegrenset::klokkeslettOK(const int time, const int minutt) const {
+// returnerer true hvis innenfor gyldige verdi.
+  return (time >= 0 && time <=23 && minutt >= 0 && minutt <= 59);
 
-//  Lag innmaten
 }
 
 
@@ -220,8 +223,12 @@ bool Tidsbegrenset::klokkeslettOK(const int time, const int minutt) const {
  *  @see   Aktivitet::skrivData()
  */
 void Tidsbegrenset::skrivData() const {         //  Skriver mor-klassens data.
+  Aktivitet::skrivData();
 
-//  Lag innmaten
+  cout << setw(2) << setfill('0') << startTime << ":"
+  << setw(2) << setfill ('0') << startMin << " - "
+  << setw(2) << setfill('0') << sluttTime << ":"
+  << setw(2) << setfill('0') << sluttMin << endl;
 }
 
 
@@ -231,8 +238,11 @@ void Tidsbegrenset::skrivData() const {         //  Skriver mor-klassens data.
  *  @see   Aktivitet::lesData()
  */
 void Heldags::lesData() {
+  Aktivitet::lesData();
 
-//  Lag innmaten
+  cout << "Beskrivelse av aktivitet: ";
+  cin.ignore();
+  getline(cin, beskrivelse);
 }
 
 
@@ -242,8 +252,10 @@ void Heldags::lesData() {
  *  @see   Aktivitet::skrivData()
  */
 void Heldags::skrivData() const {
+  Aktivitet::skrivData();
+  cout << "\nBeskrivelse: \n";
+  cout << beskrivelse << endl;
 
-//  Lag innmaten
 }
 
 
