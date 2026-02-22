@@ -263,10 +263,19 @@ void Heldags::skrivData() const {
  *  Destructor som sletter HELT begge vectorenes allokerte innhold.
  */
 Dag :: ~ Dag() {
+  //sjekker gjennom vektoren
+  for (int i = 0; i < tidsbegrensedeAktiviteter.size(); i++) {
+    //sletter pekeren på lokasjon i.
+    delete tidsbegrensedeAktiviteter[i];
+  }
+  tidsbegrensedeAktiviteter.clear();     // tømmer selve vektoren for pekeren
 
-//  Lag innmaten
+//gjør det samme for andre vektoren.
+  for (int i = 0; i < heldagsAktiviteter.size(); i++ ) {
+    delete heldagsAktiviteter[i];
 }
-
+  heldagsAktiviteter.clear();
+}
 
 /**
  *  Finner ut om selv er en gitt dato eller ei.
@@ -277,8 +286,8 @@ Dag :: ~ Dag() {
  *  @return  Om selv er en gitt dato (ut fra parametrene) eller ei
  */
 bool Dag::harDato(const int dag, const int maaned, const int aar) const {
-
-//  Lag innmaten
+  //returner true hvis alt stemmer.
+  return (dagNr == dag && maanedNr == maaned && aarNr == aar);
 }
 
 
