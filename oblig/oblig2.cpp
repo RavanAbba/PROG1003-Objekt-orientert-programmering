@@ -298,8 +298,23 @@ bool Dag::harDato(const int dag, const int maaned, const int aar) const {
  *  @see   Heldags::lesData()
  */
 void Dag::nyAktivitet()  {
+  char valg;
 
-//  Lag innmaten
+  cout << "Hvilken aktivitet ønskes opprettet (T for Tidsbegrenset), H for Heldags)): ";
+  valg = lesChar("");
+  if (valg == 'T') {
+    Tidsbegrenset* nyT = new Tidsbegrenset(); //Oppreter ny objekt dynamsik
+    nyT->lesData();     //leser inn verdiene
+    tidsbegrensedeAktiviteter.push_back(nyT);   //legger bakkerst i vektoren
+  }
+  //gjør det samme for h
+  else if (valg == 'H') {
+    Heldags* nyH = new Heldags();
+    nyH->lesData();
+    heldagsAktiviteter.push_back(nyH);
+
+  }
+
 }
 
 
@@ -310,8 +325,13 @@ void Dag::nyAktivitet()  {
  *  @see   Tidsbegrenset::skrivData()
  */
 void Dag::skrivAktiviteter() const {
-
-//  Lag innmaten
+  //skriver ut alle aktiviteter
+  for (int i = 0; i < tidsbegrensedeAktiviteter.size(); i++) {
+    tidsbegrensedeAktiviteter[i]->skrivData();
+  }
+  for (int i = 0; i < heldagsAktiviteter.size(); i++) {
+    heldagsAktiviteter[i]->skrivData();
+  }
 }
 
 
@@ -319,8 +339,7 @@ void Dag::skrivAktiviteter() const {
  *  Skriver KUN ut egen dato.
  */
 void Dag::skrivDato() const {
-
-//  Lag innmaten
+  cout << dagNr << "." << maanedNr << "." << aarNr << endl;
 }
 
 
