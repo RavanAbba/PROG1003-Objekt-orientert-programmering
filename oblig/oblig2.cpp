@@ -124,9 +124,13 @@ int main ()  {
           case 'N': nyAktivitet();      break;
           case 'A': skrivDager(true);   break;
           case 'S': skrivEnDag();       break;
-          default:  skrivMeny();        break;
+          // tar skrivMeny() ut av default
+          default: cout << "Ulovlig kommando.\n";    break;
         }
-        kommando = lesChar("\nKommando");
+        //Jeg plasserer skrivMeny her fordi den skriver ikke ut meny etter å ha 
+        //fullført kommando
+        skrivMeny();
+        kommando = lesChar("\nKommando");  //Her så skriver den ut meny alltid
     }
 
     frigiAllokertMemory();
@@ -226,7 +230,7 @@ void Tidsbegrenset::skrivData() const {         //  Skriver mor-klassens data.
   Aktivitet::skrivData();
 
   cout << setw(2) << setfill('0') << startTime << ":"
-  << setw(2) << setfill ('0') << startMin << " - "
+  << setw(2) << setfill('0') << startMin << " - "
   << setw(2) << setfill('0') << sluttTime << ":"
   << setw(2) << setfill('0') << sluttMin << endl;
 }
@@ -356,8 +360,9 @@ void Dag::skrivDato() const {
  *  @return  Om datoen er lovlig/OK eller ei
  */
 bool dagOK(const int dag, const int maaned, const int aar)  {
-
-//  Lag innmaten
+  //returner true hvis alt er sant 
+  return (dag >= 1 && dag <= 31 && maaned >= 1 && maaned <=12
+  && aar >= 1990 && aar <= 2030 );
 }
 
 
@@ -371,8 +376,12 @@ bool dagOK(const int dag, const int maaned, const int aar)  {
  *  @see     harDato(...)
  */
 Dag* finnDag(const int dag, const int maaned, const int aar)  {
-
-//  Lag innmaten
+  for (int i = 0; i < gDagene.size(); i++) {    //går gjennom alle dager
+    if (gDagene[i]->harDato(dag,maaned,aar)) {
+      return gDagene[i];     //returner peker hvis fins
+    }
+  }
+  return nullptr;
 }
 
 
@@ -380,8 +389,11 @@ Dag* finnDag(const int dag, const int maaned, const int aar)  {
  *  Frigir/sletter ALLE dagene og ALLE pekerne i 'gDagene'.
  */
 void frigiAllokertMemory()  {
-
-//  Lag innmaten
+  //sjekker gjennom alle dager
+  for ( int i = 0; i < gDagene.size(); i++ ) {
+    delete gDagene[i]; // sletter dag
+  }
+  gDagene.clear();    //tømmer pekeren
 }
 
 
@@ -394,8 +406,24 @@ void frigiAllokertMemory()  {
  *  @see   Dag::nyAktivitet()
  */
 void nyAktivitet()  {
+  int dag, maaned, aar;
+  skrivDager(false);
 
-//  Lag innmaten
+  do {
+    dag = lesInt("Dag: ", 1, 31);
+    maaned = lesInt("Måned: ", 1, 12);
+    aar = lesInt("År: ", 1990, 2030);
+
+  } while (!dagOK(dag, maaned, aar));   // Dette er egentlig unødvendig.
+
+Dag* nyDag = finnDag(dag, maaned, aar); //Leter etter dagen.
+if (!nyDag) {
+  nyDag = new Dag(dag, maaned, aar);
+  gDagene.push_back(nyDag);
+  cout << "\nNy Dag opprettet.\n";
+}
+
+nyDag->nyAktivitet();
 }
 
 
@@ -408,7 +436,19 @@ void nyAktivitet()  {
  */
 void skrivDager(const bool inkludertAktiviteter)  {
 
-//  Lag innmaten
+  if (gDagene.empty()) {
+    cout << "Det er tomt for dager.\n";
+  }
+  else {
+    for (int i = 0; i < gDagene.size(); i++) {
+      cout << endl;
+      gDagene[i]->skrivDato();  //skriver datoen
+
+      if (inkludertAktiviteter) {
+      gDagene[i]->skrivAktiviteter();   //skriver aktivitet
+      }
+    }
+  }
 }
 
 
@@ -421,8 +461,28 @@ void skrivDager(const bool inkludertAktiviteter)  {
  *  @see   Dag::skrivAktiviteter()
  */
 void skrivEnDag()  {
+  // Mye av det samme fra nyAktivitet()
+  int dag, maaned, aar;
+  skrivDager(false);
 
-//  Lag innmaten
+  do {
+    dag = lesInt("Dag: ", 1, 31);
+    maaned = lesInt("Måned: ", 1, 12);
+    aar = lesInt("År: ", 1990, 2030);
+
+  } while (!dagOK(dag, maaned, aar)); 
+
+  Dag* fantDag = finnDag(dag, maaned, aar);
+
+  if (fantDag) {
+    fantDag->skrivAktiviteter();
+
+  }
+  else {
+    cout << "\nFant ingen aktivitet på denne datoen.\n";
+  }
+
+
 }
 
 
