@@ -60,5 +60,14 @@ class Floteis : public Iskrem {
 class Isbil {
     private:
     string sted;
+    list<Iskrem*> iskremer;
 
+    public: 
+    Isbil(ifstream& inn);
+    ~Isbil();
+    void leggTilIskrem();
+    void skrivKort();
+    void skrivLang();
+    void skrivTilFil(ofstream& ut);
+    void sted();
 };
