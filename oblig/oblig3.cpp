@@ -41,7 +41,7 @@ class Sorbet : public Iskrem {
     Sorbet(ifstream& inn);
     virtual void lesFraFil(ifstream& inn);
     virtual void skrivTilSkjerm();
-    virtual void skrivTilFIl(ofstream& ut);
+    virtual void skrivTilFil(ofstream& ut);
     
 };
 
@@ -52,7 +52,7 @@ class Floteis : public Iskrem {
     public: 
     Floteis(ifstream& inn);
     virtual void lesFraFil(ifstream& inn);
-    virtual void skrivTilSkjerm();
+    virtual void skrivTilSkjerm() const;
     virtual void skrivTilFil(ofstream& ut);
 
 };
@@ -69,5 +69,18 @@ class Isbil {
     void skrivKort();
     void skrivLang();
     void skrivTilFil(ofstream& ut);
-    void sted();
+    void hentSted();
 };
+
+/**
+ * Hovedprogrammet
+ */
+int main() {
+
+}
+
+Sorbet::Sorbet(ifstream & inn) : Iskrem(inn) {
+    int type;
+    inn >> type;
+    sorbet = static_cast<isType>(type);
+}
