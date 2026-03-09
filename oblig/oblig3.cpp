@@ -78,7 +78,7 @@ class Isbil {
     void skrivKort();
     void skrivLang();
     void skrivTilFil(ofstream& ut);
-    void hentSted();
+    void hentSted() const;
 };
 
 /**
@@ -208,6 +208,44 @@ void Floteis::skrivTilFil(ofstream& ut) {
 //  isbil – implementasjon
 // ============================================================
 
+/**
+ * constructor.
+ */
 Isbil::Isbil(ifstream& inn) {
-    inn >> sted;
+    int antall;
+    int typeNr;
+
+    inn >> sted >> antall;
+    for (int i = 0; i < antall; i++) {
+        inn >> typeNr;
+        if (typeNr == 1) iskremer.push_back(new Sorbet(inn));
+        else iskremer.push_back(new Floteis(inn));
+    }
+}
+
+/**
+ * Destructor. sletter alle iskrem i listet.
+ */
+Isbil::~Isbil() {
+    for (auto* is : iskremer) delete is;
+    iskremer.clear();
+}
+
+/**
+ * Leser ny iskrem og legger den til.
+ */
+void Isbil::leggTilIskrem() {
+    int valg = lesInt("1 = Sorbet, 2 = Floteis: ", 1, 2);
+
+    if (valg == 1) {
+        iskremer.push_back(new Sorbet(cin));
+    }
+    else {
+        iskremer.push_back(new Floteis(cin));
+    }
+}
+
+
+void Isbil::skrivKort() {
+
 }
