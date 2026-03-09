@@ -30,8 +30,7 @@ class Iskrem {
 
     public:
     Iskrem(ifstream& inn);
-    virtual void lesFraFil(ifstream& inn);
-
+    virtual void lesData();
     virtual void skrivTilSkjerm() const;
     virtual void skrivTilFil(ofstream& ut);
 };
@@ -44,7 +43,7 @@ class Sorbet : public Iskrem {
 
     public:
     Sorbet(ifstream& inn);
-    virtual void lesFraFil(ifstream& inn);
+    virtual void lesData();
     virtual void skrivTilSkjerm();
     virtual void skrivTilFil(ofstream& ut);
     
@@ -58,7 +57,7 @@ class Floteis : public Iskrem {
 
     public: 
     Floteis(ifstream& inn);
-    virtual void lesFraFil(ifstream& inn);
+    virtual void lesData();
     virtual void skrivTilSkjerm() const;
     virtual void skrivTilFil(ofstream& ut);
 
@@ -101,10 +100,13 @@ Iskrem::Iskrem(ifstream& inn) {
 }
 
 /**
- * Leser alle smak og pris fra fil.
+ * Leser smak og pris.
  */
-void Iskrem::lesFraFil(ifstream& inn) {
-     inn >> smak >> pris; 
+void Iskrem::lesData() {
+    cout << "smak: ";
+    getline(cin, smak);
+
+    pris = lesInt("Pris: ", 0, 1000);
 }
 
 /**
@@ -238,14 +240,24 @@ void Isbil::leggTilIskrem() {
     int valg = lesInt("1 = Sorbet, 2 = Floteis: ", 1, 2);
 
     if (valg == 1) {
-        iskremer.push_back(new Sorbet(cin));
+        Iskrem* ny = new Sorbet();
+        ny->les
     }
     else {
-        iskremer.push_back(new Floteis(cin));
+        Iskrem* 
     }
 }
 
-
+/**
+ * skriver ut sted og antallet is.
+ */
 void Isbil::skrivKort() {
+    cout << sted << "\n Antall is: " << iskremer.size();
+}
 
+void Isbil::skrivLang() {
+    skrivKort();
+    for ( Iskrem* iskrem : iskremer) {
+        iskrem->skrivTilSkjerm();
+    }
 }
