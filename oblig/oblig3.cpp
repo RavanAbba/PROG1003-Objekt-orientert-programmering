@@ -1,7 +1,8 @@
 /**
  *  obligatorisk oppgave 3
  * 
- * 
+ * Programmet holder oversikt over isbiler og iskremer.
+ * Skriver fra fil, skriver ut isbiler og legger til iskrem.
  * 
  * @file oblig3.cpp
  * @author Ravan Abbasov
@@ -13,12 +14,13 @@
  #include <fstream>     // lese og skrive fra fil
  #include <list>
  #include "LesData2.h" 
+ #include <cctype>      // toupper
 
 using namespace std;
 
 enum isType {Sorbe, Granite, Slush};
 
-
+vector <Isbil*> gAlleIsbiler;        // global variabel som peker til alle isbilene
 // ============================================================
 //  Klassedeklarasjoner
 // ============================================================
@@ -30,6 +32,7 @@ class Iskrem {
 
     public:
     Iskrem(ifstream& inn);
+    Iskrem();               //tror jeg må ha dette som default constructor når jeg oppreder ny iskrem
     virtual void lesData();
     virtual void skrivTilSkjerm() const;
     virtual void skrivTilFil(ofstream& ut);
@@ -43,8 +46,9 @@ class Sorbet : public Iskrem {
 
     public:
     Sorbet(ifstream& inn);
+    Sorbet();                   //samme grunn som over
     virtual void lesData();
-    virtual void skrivTilSkjerm();
+    virtual void skrivTilSkjerm() const;
     virtual void skrivTilFil(ofstream& ut);
     
 };
@@ -57,6 +61,7 @@ class Floteis : public Iskrem {
 
     public: 
     Floteis(ifstream& inn);
+    Floteis();              //samme grunn som over
     virtual void lesData();
     virtual void skrivTilSkjerm() const;
     virtual void skrivTilFil(ofstream& ut);
@@ -77,13 +82,58 @@ class Isbil {
     void skrivKort();
     void skrivLang();
     void skrivTilFil(ofstream& ut);
-    void hentSted() const;
+    string hentSted() const;
 };
 
-/**
- * Hovedprogrammet
- */
+// ============================================================
+//  Deklarasjon av globale variabler
+// ============================================================
+
+void skrivMeny();
+void skrivAlleIsbiler();
+void skrivBilOgEvtLeggInn(const bool leggInn);
+void skrivTilFil();
+void lesFraFil();
+Isbil* finnIsbil(const string& sted);
+
+// ============================================================
+//  Hovedprogrammet
+// ============================================================
+
 int main() {
+    char valg;
+
+    lesFraFil();
+
+    do {
+
+        skrivMeny();
+
+        cout << "\nValg: ";
+        cin >> valg;
+        valg = toupper(valg);
+
+        switch (valg) {
+
+            case 'A': skrivAlleIsbiler(); break;
+
+            case 'E': skrivBilOgEvtLeggInn(false); break;
+
+            case 'L': skrivBilOgEvtLeggInn(true); break;
+
+            case 'Q': cout << "Avslutter programmet.\n"; break;
+
+            default: cout << "Ugyldig valg.\n";
+        }
+
+    } while (valg != 'Q');
+
+    skrivTilFil();
+
+    for (Isbil* bil : gAlleIsbiler)
+        delete bil;
+
+    return 0;
 
 }
 
@@ -98,12 +148,17 @@ int main() {
 Iskrem::Iskrem(ifstream& inn) { 
     inn >> smak >> pris; 
 }
+/**
+ * Tom constructor
+ */
+Iskrem::Iskrem() { }
 
 /**
  * Leser smak og pris.
  */
 void Iskrem::lesData() {
     cout << "smak: ";
+    cin.ignore();
     getline(cin, smak);
 
     pris = lesInt("Pris: ", 0, 1000);
@@ -113,14 +168,16 @@ void Iskrem::lesData() {
  * skriver til skjerm smak og pris.
  */
 void Iskrem::skrivTilSkjerm() const {
-    cout << "smak: " << smak << "pris: " << pris;
+    cout << "smak: " << smak << " pris: " << pris;
 }
 
 /**
  * skriver smak og pris til fil.
+ * 
+ * @param ut  Filen det skal skrives til.
  */
 void Iskrem::skrivTilFil(ofstream& ut) {
-    ut << smak << ' ' << pris << ' ' << "\n";
+    ut << smak << ' ' << pris << "\n";
 }
 
 
@@ -139,21 +196,26 @@ Sorbet::Sorbet(ifstream & inn) : Iskrem(inn) {
 }
 
 /**
+ * tom constructor
+ */
+Sorbet::Sorbet() : Iskrem() { }
+
+/**
  * leser alle sorbet data fra fil.
  */
-void Sorbet::lesFraFil(ifstream & inn) {
+void Sorbet::lesData() {
     int input;
 
-    Iskrem::lesFraFil(inn);     //leser smak og pris
+    Iskrem::lesData();     //leser smak og pris
   
-    inn >> input;                //les sorbet type
+    input = lesInt("Type (0=Sorbe,1=Granite,2=Slush): ", 0, 2);  //les sorbet type
     sorbet = static_cast<isType>(input);    //konverter til enum
 }
 
 /**
  * skriver ut alle sorbet data til skjerm
  */
-void Sorbet::skrivTilSkjerm() {
+void Sorbet::skrivTilSkjerm() const{
     Iskrem::skrivTilSkjerm();
     cout << "type: ";
     switch (sorbet) {
@@ -165,6 +227,8 @@ void Sorbet::skrivTilSkjerm() {
 
 /**
  * skriver ut alle Sorbet data til fil
+ * 
+ * @param ut  Filen det skal skrives til.
  */
 void Sorbet::skrivTilFil(ofstream& ut) {
     Iskrem::skrivTilFil(ut);
@@ -183,11 +247,16 @@ Floteis::Floteis(ifstream& inn) : Iskrem(inn) {
 }
 
 /**
- * leser alle fløteis data fra fil.
+ * tom constructor.
  */
-void Floteis::lesFraFil(ifstream& inn) {
-    Iskrem::lesFraFil(inn);
-    inn >> vegan;
+Floteis::Floteis() : Iskrem() { }
+
+/**
+ * leser alle fløteis data.
+ */
+void Floteis::lesData() {
+    Iskrem::lesData();
+    vegan = lesInt("Vegan (0 = nei, 1 = ja)", 0, 1);
 }
 
 /**
@@ -200,6 +269,8 @@ void Floteis::skrivTilSkjerm() const{
 
 /**
  * skrive alle fløteis data til fil.
+ * 
+ * @param ut  Filen det skal skrives til
  */
 void Floteis::skrivTilFil(ofstream& ut) {
     Iskrem::skrivTilFil(ut);
@@ -238,14 +309,16 @@ Isbil::~Isbil() {
  */
 void Isbil::leggTilIskrem() {
     int valg = lesInt("1 = Sorbet, 2 = Floteis: ", 1, 2);
+    Iskrem* ny;
 
     if (valg == 1) {
-        Iskrem* ny = new Sorbet();
-        ny->les
+        ny = new Sorbet();
     }
     else {
-        Iskrem* 
+        ny = new Floteis();
     }
+    ny->lesData();              //les datta fra bruker
+    iskremer.push_back(ny);     //legg i lista
 }
 
 /**
@@ -255,9 +328,144 @@ void Isbil::skrivKort() {
     cout << sted << "\n Antall is: " << iskremer.size();
 }
 
+/**
+ * Skriver alle data om isbilen og alle iskremene.
+ */
 void Isbil::skrivLang() {
     skrivKort();
     for ( Iskrem* iskrem : iskremer) {
         iskrem->skrivTilSkjerm();
     }
+}
+
+/**
+ * skriver ut til fil.
+ * 
+ * @param ut  Filen det skal skrives til.
+ */
+void Isbil::skrivTilFil(ofstream& ut) {
+    ut << sted << " " << iskremer.size() << "\n";
+    //looper gjennom hver iskrem og skriver ut en om gangen.
+    for (Iskrem* iskrem : iskremer) {
+        iskrem->skrivTilFil(ut);
+    }
+}
+
+/**
+ * returner bilens lokasjon
+ */
+string Isbil::hentSted() const {
+    return sted;
+}
+
+// ============================================================
+//  Globale funksjoner
+// ============================================================
+
+/**
+ * skriver ut meny
+ */
+void skrivMeny() {
+    char valg;
+    cout << "\nA - Skriv ut alle isbiler";
+    cout << "\nE - Skriv en isbil";
+    cout << "\nL - Legg til iskrem";
+    cout << "\nQ - Avslutt";
+    cout << "\nValg: ";
+    cin >> valg;
+    valg = toupper(valg);
+
+    switch (valg) {
+        case 'A': skrivAlleIsbiler(); break;
+        case 'E': skrivBilOgEvtLeggInn(false); break;
+        case 'L': skrivBilOgEvtLeggInn(true); break;
+        case 'Q': cout << "Avslutter programmet.\n"; break;
+        default: cout << "Ugyldig valg.\n";
+    }
+}
+
+/**
+ * Skriver ut alle isbilenes hoveddata
+ */
+void skrivAlleIsbiler() {
+    if (gAlleIsbiler.empty()) {
+        cout << "ingen isbiler registrert. \n";
+    }
+    else {
+        for (Isbil* bil : gAlleIsbiler) {
+            bil->skrivKort();
+        }
+    }
+}
+
+/**
+ * skriver alle isbiler, hvis den finnes så leser den ett sted fra brukeren og skriver alle data til isbil
+ * 
+ * @param leggInn - true hvis bruker skal legge inn ny iskrem
+ * @see skrivAlleIsbiller()
+ * @see finnIsbil()
+ * @see Isbil::leggTilIskrem()
+ */
+void skrivBilOgEvtLeggInn(const bool leggInn) {
+    string sted;
+    skrivAlleIsbiler();
+
+    if (gAlleIsbiler.empty()) cout << "Ingen isbiller er registret.\n";
+    else {
+        cout << "\nSted: ";
+        cin.ignore();
+        getline(cin, sted);
+
+        //sjekker om bilen fins
+        Isbil* bil = finnIsbil(sted);
+
+        if (bil != nullptr) {
+            bil->skrivLang();
+
+            if (leggInn) bil->leggTilIskrem();
+        }
+        else cout << "Fant ikke isbil.\n";
+    }
+}
+
+/**
+ * skriver aøøe bilene og dens data til fil.
+ */
+void skrivTilFil() {
+    //oppretter fil
+    ofstream ut("ISBIL.DTA");
+    //skriver antall bil til fil
+    ut << gAlleIsbiler.size() << "\n";
+    //skriver hver bil til fil
+    for (Isbil* isbil : gAlleIsbiler) isbil->skrivTilFil(ut);
+}
+
+/**
+ * leser hele datasktrukturen fra fil
+ */
+void lesFraFil() {
+    int antall;
+    //leser fra filen
+    ifstream inn("ISBIL.DTA");
+
+    if (!inn) cout << "fant ikke filen.\n";
+    else {
+        inn >> antall;
+        for (int i = 0; i < antall; i++) {
+            gAlleIsbiler.push_back(new Isbil(inn));
+        }
+    }
+}
+
+/**
+ * returnerer lokasjon hvis det er riktig.
+ * 
+ * @param sted - område, lokasjon til isbil.
+ */
+Isbil* finnIsbil(const string& sted) {
+    for (Isbil* bil : gAlleIsbiler) {
+        if (bil->hentSted() == sted) return bil;
+    }
+
+    return nullptr;
 }
